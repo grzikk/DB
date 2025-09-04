@@ -5,7 +5,7 @@ import json
 import locale
 from discord.ext import commands
 
-k1 = os.environ['k1']
+k1 = os.environ["k1"]
 k2 = os.environ['k2']
 k3 = os.environ['k3']
 
