@@ -5,11 +5,11 @@ import json
 import locale
 from discord.ext import commands
 
-k1 = os.environ["k1"]
-k2 = os.environ['k2']
-k3 = os.environ['k3']
+k1 = os.environ['K1']
+k2 = os.environ['K2']
+k3 = os.environ['K3']
 
-bot = commands.Bot(command_prefix='!', intents=discord.Intents.all, help_command=None)
+bot = commands.Bot(command_prefix='!', intents=discord.Intents.all(), help_command=None)
 
 @bot.command()
 async def help(arg):
