@@ -9,7 +9,7 @@ k1 = os.environ["k1"]
 k2 = os.environ['k2']
 k3 = os.environ['k3']
 
-bot = commands.Bot(command_prefix='!', intents=discord.Intents.all(), help_command=None)
+bot = commands.Bot(command_prefix='!', intents=discord.Intents.all, help_command=None)
 
 @bot.command()
 async def help(arg):
