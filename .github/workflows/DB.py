@@ -22,7 +22,7 @@ async def help(ctx, arg1=None):
     if arg1 == None:
         t1 = "Your friendly bot Tadek."
         t2 = "Commands list:"
-        t3 = "!check_revives arg\n!check_price\n!check_rw"
+        t3 = "!check_revives\n!check_price\n!check_rw"
         embed = format_odpowiedzi(t1, t2, t3)
 ##    text = "!check_revives own  -  check revive settings of our members \n"
 ##    text = text + "!check_revives 'ID'  -  check who is revivable by faction id without ' '\n"
