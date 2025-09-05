@@ -9,15 +9,26 @@ k1 = os.environ['K1']
 k2 = os.environ['K2']
 k3 = os.environ['K3']
 
+def format_odpowiedzi(tekst1=None, tekst2=None, tekst3=None):
+    embed = discord.Embed(tekst1)
+    embed.add_field(name=tekst2,value=retStr)
+    retStr = str(tekst3)
+    return embed
+                 
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all(), help_command=None)
 
 @bot.command()
-async def help(arg):
-    text = "!check_revives own  -  check revive settings of our members \n"
-    text = text + "!check_revives 'ID'  -  check who is revivable by faction id without ' '\n"
-    text = text + "!check_price caches  -  check average and lowest prices of caches on market \n"
-    text = text + "!check_price 'Item Name'  -  check average and lowest prices of 'Item Name', name must match in game name of item \n"
-    await arg.send(text)
+async def help(ctx, arg1=None):
+    if arg1 == None:
+        t1 = "Your friendly bot Tadek.
+        t2 = "Commands list:"
+        t3 = "!check_revives arg\n!check_price\n!check_rw"
+        embed = format_odpowiedzi(t1, t2, t3)
+##    text = "!check_revives own  -  check revive settings of our members \n"
+##    text = text + "!check_revives 'ID'  -  check who is revivable by faction id without ' '\n"
+##    text = text + "!check_price caches  -  check average and lowest prices of caches on market \n"
+##    text = text + "!check_price 'Item Name'  -  check average and lowest prices of 'Item Name', name must match in game name of item \n"
+    await arg.send(embed)
 
 @bot.command()
 async def check_revives(ctx, arg):
