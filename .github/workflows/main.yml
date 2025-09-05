@@ -3,6 +3,10 @@ name: CI
 on:
   workflow_dispatch:
 
+on:
+  schedule:
+    - cron: '*/6 * * * *'
+
 env:
   K1: ${{ secrets.AK1 }}
   K2: ${{ secrets.AK2 }}
