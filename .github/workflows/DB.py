@@ -28,7 +28,7 @@ async def help(ctx, arg1=None):
 ##    text = text + "!check_revives 'ID'  -  check who is revivable by faction id without ' '\n"
 ##    text = text + "!check_price caches  -  check average and lowest prices of caches on market \n"
 ##    text = text + "!check_price 'Item Name'  -  check average and lowest prices of 'Item Name', name must match in game name of item \n"
-    await arg.send(embed)
+    await ctx.send(embed)
 
 @bot.command()
 async def check_revives(ctx, arg):
