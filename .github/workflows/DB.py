@@ -10,9 +10,9 @@ k2 = os.environ['K2']
 k3 = os.environ['K3']
 
 def format_odpowiedzi(tekst1=None, tekst2=None, tekst3=None):
+    retStr = str(tekst3)
     embed = discord.Embed(tekst1)
     embed.add_field(name=tekst2,value=retStr)
-    retStr = str(tekst3)
     return embed
                  
 bot = commands.Bot(command_prefix='!', intents=discord.Intents.all(), help_command=None)
@@ -20,7 +20,7 @@ bot = commands.Bot(command_prefix='!', intents=discord.Intents.all(), help_comma
 @bot.command()
 async def help(ctx, arg1=None):
     if arg1 == None:
-        t1 = "Your friendly bot Tadek.
+        t1 = "Your friendly bot Tadek."
         t2 = "Commands list:"
         t3 = "!check_revives arg\n!check_price\n!check_rw"
         embed = format_odpowiedzi(t1, t2, t3)
