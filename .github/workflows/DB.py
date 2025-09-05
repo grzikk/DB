@@ -11,7 +11,7 @@ k3 = os.environ['K3']
 
 def format_odpowiedzi(tekst1=None, tekst2=None, tekst3=None):
     retStr = str(tekst3)
-    embed = discord.Embed(tekst1)
+    embed = discord.Embed(title = tekst1)
     embed.add_field(name=tekst2,value=retStr)
     return embed
                  
