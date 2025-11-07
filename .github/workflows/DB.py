@@ -4,20 +4,20 @@ import requests
 import json
 import locale
 from discord.ext import commands
+from operator import itemgetter
 
 k1 = os.environ['K1']
 k2 = os.environ['K2']
 k3 = os.environ['K3']
 
-def format_odpowiedzi(tekst1=None, tekst2=None, tekst3=None):
-    retStr = str(tekst3)
-    embed = discord.Embed(title = tekst1, colour=0xED4245)
-    embed.add_field(name=tekst2, value=retStr, inline=True)
+def format_odpowiedzi(tekst1=None, tekst2=None, tekst3=None, kolor=0xED4245):
+    embed = discord.Embed(title = tekst1, colour=kolor)
+    embed.add_field(name=tekst2, value=tekst3, inline=False)
     return embed
 
 def dodaj_pole(embed=None, tekst2=None, tekst3=None):
     retStr = str(tekst3)
-    embed.add_field(name=tekst2, value=retStr, inline=True)
+    embed.add_field(name=tekst2, value=retStr, inline=False)
     return embed
 
 def zapytanie(arg, arg1=None):
@@ -25,6 +25,14 @@ def zapytanie(arg, arg1=None):
         link = 'https://api.torn.com/v2/faction/'+str(arg1)+'/members?striptags=true&key='+k2
     elif arg == "frakcja_podstawowe":
         link = 'https://api.torn.com/v2/faction/'+str(arg1)+'/basic?key='+k1
+    elif arg == "cena_skrzynki":
+        link = 'https://api.torn.com/v2/market/'+str(arg1)+'/itemmarket?offset=4&key='+k1
+    elif arg == "cena_pelna":
+        link = 'https://api.torn.com/torn/?selections=items&key='+k1
+    elif arg == "cena_przedmiot":
+        link = 'https://api.torn.com/v2/market/'+str(arg1)+'/itemmarket?offset=4&key='+k1
+    elif arg == "rw":
+        link = 'https://api.torn.com/v2/faction/'+str(arg1)+'/rankedwars?key='+k1
     wynik = requests.get(link).json()
     return wynik
 
@@ -33,11 +41,11 @@ bot = commands.Bot(command_prefix='!', intents=discord.Intents.all(), help_comma
 @bot.command()
 async def help(ctx):
     embed = discord.Embed(title = "Command list:", colour=0xED4245)
-    embed.add_field(name="!check_revive twr", value="Revive setting of TWR members.", inline=True)
-    embed.add_field(name="!check_revive ID", value="Revive setting of other faction members, where ID is faction's ID", inline=True)
-    embed.add_field(name="!check_price caches", value="Market price of RW caches", inline=True)
-    embed.add_field(name="!check_price ItemName", value="Market price of any item. ItemName must match exactly name of item", inline=True)
-    embed.add_field(name="!check_rw ID", value="History of last Ranked Wars of other faction, where ID is faction's ID", inline=True)
+    embed.add_field(name="!check_revive twr", value="Revive setting of TWR members.", inline=False)
+    embed.add_field(name="!check_revive ID", value="Revive possibility of faction members, where ID is faction's ID", inline=False)
+    embed.add_field(name="!check_price caches", value="Market price of RW caches", inline=False)
+    embed.add_field(name="!check_price ItemName", value="Market price of any item. ItemName must match exactly name of item", inline=False)
+    embed.add_field(name="!check_rw ID", value="History of last 20 Ranked Wars faction, where ID is faction's ID", inline=False)
     await ctx.send(embed=embed)
 
 @bot.command()
@@ -75,55 +83,80 @@ async def check_revive(ctx, zmienna=None):
         await ctx.send(embed=embed)
 
 @bot.command()
-async def check_price(ctx, arg):
-    if arg == "caches":
-        lista1 = "Cache prices: "
-        lista2 = "Friends & faction:"
+async def check_price(ctx, zmienna):
+    tresc = ""
+    if zmienna == "caches":
+        embed = discord.Embed(title = "Caches.", colour=0xED4245)
         for i in range(1118, 1123):
-            apytanie = requests.get('https://api.torn.com/v2/market/'+str(i)+'/itemmarket?offset=4&key='+k1)
-            wynik = apytanie.json()
-            lista1 = lista1 + "\n\n" + wynik['itemmarket']['item']['name'] + " average price is: " + str('${:,.0f}'.format(wynik['itemmarket']['item']['average_price'])) + "\nCheapest on itemmarket is: " + str('${:,.0f}'.format(wynik['itemmarket']['listings'][int('0')]['price']))
-        await ctx.send(lista1)
+            wynik = zapytanie("cena_skrzynki", i)
+            tresc = "Average price: " + str('${:,.0f}'.format(wynik['itemmarket']['item']['average_price'])) + "\nMarket price: " + str('${:,.0f}'.format(wynik['itemmarket']['listings'][int('0')]['price']))
+            embed = dodaj_pole(embed, wynik['itemmarket']['item']['name'], tresc)
+        await ctx.send(embed=embed)
     else:
-        lista1 = ""
-        itemid = ""
-        apytanie = requests.get('https://api.torn.com/torn/?selections=items&key='+k1)
-        wynik = apytanie.json()
-        wynik = wynik['items']
+        embed = discord.Embed(title = zmienna + ".", colour=0xED4245)
+        wynik = zapytanie("cena_pelna")['items']
         for key in wynik:
-            wynik[key]['name']
-            if wynik[key]['name']==arg:
+            if wynik[key]['name']==zmienna:
                 itemid = key
                 pass
         if itemid != "":
-            apytanie = requests.get('https://api.torn.com/v2/market/'+str(itemid)+'/itemmarket?offset=4&key='+k1)
-            wynik = apytanie.json()
-            lista1 = wynik['itemmarket']['item']['name'] + " average price is: " + str('${:,.0f}'.format(wynik['itemmarket']['item']['average_price'])) + "\nCheapest on itemmarket is: " + str('${:,.0f}'.format(wynik['itemmarket']['listings'][int('0')]['price']))
+            wynik = zapytanie("cena_przedmiot", itemid)
+            tresc = "Average price: " + str('${:,.0f}'.format(wynik['itemmarket']['item']['average_price'])) + "\nMarket price: " + str('${:,.0f}'.format(wynik['itemmarket']['listings'][int('0')]['price']))
+            embed = dodaj_pole(embed, "", tresc)
         else:
-            lista1 = "Wrong item name"
-        await ctx.send(lista1)
+            embed = dodaj_pole(embed, "Error!", "Wrong item name")
+        await ctx.send(embed=embed)
 
 @bot.command()
-async def check_rw(ctx, arg):
-    link = 'https://api.torn.com/v2/faction/'+str(arg)+'/basic?key='+k1
-    apytanie = requests.get(link)
-    wynik = apytanie.json()
-    lista1 = wynik['basic']['name'] + "[" + str(wynik['basic']['id']) + "] \n\n"
-    apytanie = requests.get('https://api.torn.com/v2/faction/'+str(arg)+'/rankedwars?key='+k1)
-    wynik = apytanie.json()
-    wynik = wynik['rankedwars']
+async def check_rw(ctx, zmienna):
+    i = 0
+    wynik = zapytanie("frakcja_podstawowe", zmienna)
+    embed = discord.Embed(title = wynik['basic']['name'] + "[" + str(wynik['basic']['id']) + "]", colour=0xED4245)
+    wynik = zapytanie("rw", zmienna)['rankedwars']
     for poz in wynik:
-        pass
-    retStr = str("""```css\nblablabla```""")
-    embed = discord.Embed(title=lista1)
-    embed.add_field(name="Ranked wars history:",value=retStr)
+        if i <= 20:
+            
+            start = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(poz['start']))
+            end = time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(poz['end']))
+            tresc = ""
+            for key in poz['factions']:
+                tresc = tresc + key['name']+"["+str(key['id'])+"] - "+str(key['score'])+"\n"
+            embed = dodaj_pole(embed, start + " - " + end, tresc)
+            i = i + 1
+        else:
+            pass
     await ctx.send(embed=embed)
 
 @bot.command()
-async def check_health(ctx, arg1=None, arg2=None):
-    apytanie = requests.get('https://api.torn.com/v2/faction/'+str(arg1)+'/basic?key='+k1)
-    wynik = apytanie.json()
-    embedVar = discord.Embed(title="Title", description="Desc", color=0x00ff00)
-    await ctx.send()
+async def check_hosp(ctx, zmienna=None, zmienna2=None):
+    wynik = zapytanie("frakcja_zaawansowane", zmienna)
+    czas = int(time.time())
+    lista = []
+    embedList = []
+    for key in wynik['members']:
+        if key['status']['state'] == "Hospital":
+            nick = key['name'] + "[" + str(key['id']) + "]"
+            status1 = key['status']['state']
+            czas1 = key['status']['until']
+            status2 = key['last_action']['status']
+            czas2 = key['last_action']['timestamp']
+            link = "https://www.torn.com/loader.php?sid=attack&user2ID=" + str(key['id'])
+            level = key['level']
+            lista.append([nick, status1, czas1, status2, czas2, link, level])
+    lista1 = sorted(lista, key=itemgetter(2), reverse=False)
+    licznik = 0
+    for poz in lista1:
+        if licznik < 10:
+            if poz[3] == "Offline":
+                kolor = 0xED4245
+            elif poz[3] == "Idle":
+                kolor = 0x607d8b
+            elif poz[3] == "Online":
+                kolor = 0x2ecc71
+            embed = format_odpowiedzi(poz[0], str(datetime.timedelta(seconds=poz[2]-czas)), "Level " + str(poz[6]) + "\n[Attack page]("+poz[5]+")\n" + poz[3] + ", " + str(datetime.timedelta(seconds=czas-poz[4])), kolor)
+            embedList.append(embed)
+            licznik = licznik + 1
+    await ctx.send(embeds=embedList)
     
 bot.run(k3)
+
