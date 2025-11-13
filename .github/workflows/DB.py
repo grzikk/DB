@@ -3,6 +3,8 @@ import discord
 import requests
 import json
 import locale
+import time
+import datetime
 from discord.ext import commands
 from operator import itemgetter
 
