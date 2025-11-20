@@ -19,7 +19,7 @@ def format_odpowiedzi(tekst1=None, tekst2=None, tekst3=None, kolor=0xED4245):
 
 def dodaj_pole(embed=None, tekst2=None, tekst3=None):
     retStr = str(tekst3)
-    embed.add_field(name=tekst2, value=retStr, inline=False)
+    embed.add_field(name=tekst2, value=retStr, inline=True)
     return embed
 
 def zapytanie(arg, arg1=None):
