@@ -144,7 +144,7 @@ async def check_hosp(ctx, zmienna=None, zmienna2=None):
             czas2 = key['last_action']['timestamp']
             link = "https://www.torn.com/loader.php?sid=attack&user2ID=" + str(key['id'])
             level = key['level']
-            if czas1 < 1200:
+            if czas1-czas < 1200:
                 lista.append([nick, status1, czas1, status2, czas2, link, level])
     lista1 = sorted(lista, key=itemgetter(2), reverse=False)
     licznik = 0
