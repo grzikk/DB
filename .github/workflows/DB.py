@@ -14,7 +14,7 @@ k3 = os.environ['K3']
 
 def format_odpowiedzi(tekst1=None, tekst2=None, tekst3=None, kolor=0xED4245):
     embed = discord.Embed(title = tekst1, colour=kolor)
-    embed.add_field(name=tekst2, value=tekst3, inline=False)
+    embed.add_field(name=tekst2, value=tekst3, inline=True)
     return embed
 
 def dodaj_pole(embed=None, tekst2=None, tekst3=None):
@@ -146,7 +146,8 @@ async def check_hosp(ctx, zmienna=None, zmienna2=None):
                 czas2 = key['last_action']['timestamp']
                 link = "https://www.torn.com/loader.php?sid=attack&user2ID=" + str(key['id'])
                 level = key['level']
-                lista.append([nick, status1, czas1, status2, czas2, link, level])
+                if czas1-czas < 1200:
+                    lista.append([nick, status1, czas1, status2, czas2, link, level])
         lista1 = sorted(lista, key=itemgetter(2), reverse=False)
         licznik = 0
         for poz in lista1:
