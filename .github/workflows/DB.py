@@ -131,35 +131,40 @@ async def check_rw(ctx, zmienna):
 
 @bot.command()
 async def check_hosp(ctx, zmienna=None, zmienna2=None):
-    wynik = zapytanie("frakcja_zaawansowane", zmienna)
-    czas = int(time.time())
-    lista = []
-    embedList = []
-    for key in wynik['members']:
-        if key['status']['state'] == "Hospital":
-            nick = key['name'] + "[" + str(key['id']) + "]"
-            status1 = key['status']['state']
-            czas1 = key['status']['until']
-            status2 = key['last_action']['status']
-            czas2 = key['last_action']['timestamp']
-            link = "https://www.torn.com/loader.php?sid=attack&user2ID=" + str(key['id'])
-            level = key['level']
-            if czas1-czas < 1200:
+    iteracja = 0
+    while iteracja < 20:
+        wynik = zapytanie("frakcja_zaawansowane", zmienna)
+        czas = int(time.time())
+        lista = []
+        embedList = []
+        for key in wynik['members']:
+            if key['status']['state'] == "Hospital":
+                nick = key['name'] + "[" + str(key['id']) + "]"
+                status1 = key['status']['state']
+                czas1 = key['status']['until']
+                status2 = key['last_action']['status']
+                czas2 = key['last_action']['timestamp']
+                link = "https://www.torn.com/loader.php?sid=attack&user2ID=" + str(key['id'])
+                level = key['level']
                 lista.append([nick, status1, czas1, status2, czas2, link, level])
-    lista1 = sorted(lista, key=itemgetter(2), reverse=False)
-    licznik = 0
-    for poz in lista1:
-        if licznik < 10:
-            if poz[3] == "Offline":
-                kolor = 0xED4245
-            elif poz[3] == "Idle":
-                kolor = 0x607d8b
-            elif poz[3] == "Online":
-                kolor = 0x2ecc71
-            embed = format_odpowiedzi(poz[0], str(datetime.timedelta(seconds=poz[2]-czas)), "Level " + str(poz[6]) + "\n[Attack page]("+poz[5]+")\n" + poz[3] + ", " + str(datetime.timedelta(seconds=czas-poz[4])), kolor)
-            embedList.append(embed)
-            licznik = licznik + 1
-    await ctx.send(embeds=embedList)
+        lista1 = sorted(lista, key=itemgetter(2), reverse=False)
+        licznik = 0
+        for poz in lista1:
+            if licznik < 10:
+                if poz[3] == "Offline":
+                    kolor = 0xED4245
+                elif poz[3] == "Idle":
+                    kolor = 0x607d8b
+                elif poz[3] == "Online":
+                    kolor = 0x2ecc71
+                embed = format_odpowiedzi(poz[0], str(datetime.timedelta(seconds=poz[2]-czas)), "Level " + str(poz[6]) + "\n[Attack page]("+poz[5]+")\n" + poz[3] + ", " + str(datetime.timedelta(seconds=czas-poz[4])), kolor)
+                embedList.append(embed)
+                licznik = licznik + 1
+        await ctx.send(embeds=embedList)
+        if iteracja == 9:
+            await ctx.send("Done")
+        iteracja = iteracja + 1
+        time.sleep(31)
     
 bot.run(k3)
 
