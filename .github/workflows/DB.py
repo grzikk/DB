@@ -132,6 +132,7 @@ async def check_rw(ctx, zmienna):
 @bot.command()
 async def check_hosp(ctx, zmienna=None, zmienna2=None):
     iteracja = 0
+    poprzednia = 0
     while iteracja < 20:
         wynik = zapytanie("frakcja_zaawansowane", zmienna)
         czas = int(time.time())
@@ -161,11 +162,12 @@ async def check_hosp(ctx, zmienna=None, zmienna2=None):
                 embed = format_odpowiedzi(poz[0], str(datetime.timedelta(seconds=poz[2]-czas)), "Level " + str(poz[6]) + "\n[Attack page]("+poz[5]+")\n" + poz[3] + ", " + str(datetime.timedelta(seconds=czas-poz[4])), kolor)
                 embedList.append(embed)
                 licznik = licznik + 1
-        await ctx.send(embeds=embedList)
-        if iteracja == 9:
-            await ctx.send("Done")
+        try:
+            await poprzednia.delete(delay = 0)
+        except:
+            pass
+        poprzednia = await ctx.send(embeds=embedList)
         iteracja = iteracja + 1
         time.sleep(31)
-    
 bot.run(k3)
 
