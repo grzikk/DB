@@ -133,8 +133,8 @@ async def check_rw(ctx, zmienna):
 async def check_hosp(ctx, zmienna=None, zmienna2=None):
     iteracja = 0
     poprzednia = 0
-    while iteracja < 20:
-        wynik = zapytanie("frakcja_zaawansowane", zmienna)
+    while iteracja < zmienna1:
+        wynik = zapytanie("frakcja_zaawansowane", zmienna, zmienna1=1)
         czas = int(time.time())
         lista = []
         embedList = []
