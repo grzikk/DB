@@ -130,11 +130,11 @@ async def check_rw(ctx, zmienna):
     await ctx.send(embed=embed)
 
 @bot.command()
-async def check_hosp(ctx, zmienna=None, zmienna2=None):
+async def check_hosp(ctx, zmienna=None, zmienna2=1):
     iteracja = 0
     poprzednia = 0
-    while iteracja < zmienna1:
-        wynik = zapytanie("frakcja_zaawansowane", zmienna, zmienna1=1)
+    while iteracja < zmienna2:
+        wynik = zapytanie("frakcja_zaawansowane", zmienna)
         czas = int(time.time())
         lista = []
         embedList = []
