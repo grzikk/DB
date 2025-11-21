@@ -168,6 +168,9 @@ async def check_hosp(ctx, zmienna=None, zmienna2=1):
             pass
         poprzednia = await ctx.send(embeds=embedList)
         iteracja = iteracja + 1
-        time.sleep(31)
+        if zmienna2 == 1:
+            pass
+        else:
+            time.sleep(300)
 bot.run(k3)
 
