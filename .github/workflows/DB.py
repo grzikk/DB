@@ -172,5 +172,26 @@ async def check_hosp(ctx, zmienna=None, zmienna2=1):
             pass
         else:
             time.sleep(300)
+@bot.command()
+async def travel(ctx, zmienna=None, zmienna2=None):
+        tresc = ''
+        wynik = zapytanie("frakcja_zaawansowane", "13737")
+        for pozycja in wynik['members']:
+            if pozycja['status']['state']=="Traveling":
+                tresc = tresc + pozycja['name'] + "[" + str(pozycja['id']) + "] - " + pozycja['status']['description'] + "\n"
+        embed = format_odpowiedzi("List of bad boys", "Traveling", tresc)
+        tresc = ''
+        for pozycja in wynik['members']:
+            if pozycja['status']['state']=="Abroad":
+                tresc = tresc + pozycja['name'] + "[" + str(pozycja['id']) + "]" + pozycja['status']['description'] + "\n"
+        embed = dodaj_pole(embed, "Abroad", tresc)
+        for pozycja in wynik['members']:
+            if pozycja['status']['state']=="Hospital":
+                    if "In hospital" in pozycja['status']['description']:
+                        pass
+                    else:
+                        tresc = tresc + pozycja['name'] + "[" + str(pozycja['id']) + "]" + pozycja['status']['description'] + "\n"
+        embed = dodaj_pole(embed, "Hospital abroad", tresc)
+        await ctx.send(embed=embed)
 bot.run(k3)
 
