@@ -14,12 +14,12 @@ k3 = os.environ['K3']
 
 def format_odpowiedzi(tekst1=None, tekst2=None, tekst3=None, kolor=0xED4245):
     embed = discord.Embed(title = tekst1, colour=kolor)
-    embed.add_field(name=tekst2, value=tekst3, inline=True)
+    embed.add_field(name=tekst2, value=tekst3, inline=False)
     return embed
 
 def dodaj_pole(embed=None, tekst2=None, tekst3=None):
     retStr = str(tekst3)
-    embed.add_field(name=tekst2, value=retStr, inline=True)
+    embed.add_field(name=tekst2, value=retStr, inline=False)
     return embed
 
 def zapytanie(arg, arg1=None):
